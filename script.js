@@ -43,6 +43,7 @@ let musicOscillators = [];
 let yesClicks = 0;
 const requiredYesClicks = 17;
 let noAutoTimer;
+let lastYesTap = 0;
 const introMusic = new Audio("intro.mp3");
 const finalMusic = new Audio("final.mp3");
 introMusic.loop = true;
@@ -462,8 +463,10 @@ const init = () => {
   autoRoamNo();
 };
 
-yesBtn.addEventListener("mouseenter", playClick);
-yesBtn.addEventListener("click", () => {
+const handleYesPress = () => {
+  const now = Date.now();
+  if (now - lastYesTap < 250) return;
+  lastYesTap = now;
   yesClicks += 1;
   const scale = 1 + yesClicks * 0.12;
   yesBtn.style.transform = `scale(${scale})`;
@@ -485,6 +488,13 @@ yesBtn.addEventListener("click", () => {
   playBoom();
   celebrate();
   yesBtn.disabled = true;
+};
+
+yesBtn.addEventListener("mouseenter", playClick);
+yesBtn.addEventListener("click", handleYesPress);
+yesBtn.addEventListener("touchend", (event) => {
+  event.preventDefault();
+  handleYesPress();
 });
 
 noBtn.addEventListener("mouseenter", (event) => escapeNo(event.clientX, event.clientY));
