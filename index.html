@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Be My Valentine</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="bg-glow"></div>
+    <div class="bg-wave" aria-hidden="true"></div>
+    <div class="flash-layer" aria-hidden="true"></div>
+    <div class="sparkles" aria-hidden="true"></div>
+    <div class="hearts-layer" aria-hidden="true"></div>
+    <div class="floating-texts" aria-hidden="true"></div>
+    <div class="confetti-layer" aria-hidden="true"></div>
+    <div class="fireworks-layer" aria-hidden="true"></div>
+
+    <main class="card" role="main">
+      <p class="tag">Pentru tine</p>
+      <h1 class="headline">Erica, vrei să fii My Valentine? 💖</h1>
+      <div class="hero-echo">Spune DA daca te tine.</div>
+      <p class="subhead">Fără presiune.✨</p>
+
+      <button id="photoBtn" class="chip photo-btn">În caz că ai uitat cum arătam</button>
+
+      <div class="actions">
+        <button id="yesBtn" class="btn yes">DA 💘</button>
+        <button id="noBtn" class="btn no">NU 😈</button>
+      </div>
+
+      <div class="micro-hints" id="microHints" aria-live="polite"></div>
+
+      <div class="toggles">
+        <button id="musicBtn" class="chip" aria-pressed="false">Muzică: Oprit</button>
+        <button id="sfxBtn" class="chip" aria-pressed="true">Sunete: Pornit</button>
+      </div>
+    </main>
+
+    <div class="overlay" id="successOverlay" aria-hidden="true">
+      <div class="overlay-card">
+        <h2>Știam că vei spune da!</h2>
+        <p>Love you Negruto</p>
+        <div class="final-video-wrap" aria-hidden="true">
+          <video
+            class="final-video"
+            id="finalVideo"
+            src="final-video.mp4"
+            autoplay
+            loop
+            playsinline
+          ></video>
+        </div>
+      </div>
+    </div>
+
+    <div class="photo-overlay" id="photoOverlay" aria-hidden="true">
+      <div class="photo-card">
+        <div class="photo-img" role="img" aria-label="Noi doi"></div>
+        <p class="photo-msg" id="photoMsg">Hai că-ți ajunge, ai altceva de făcut.</p>
+      </div>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
