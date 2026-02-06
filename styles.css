@@ -558,6 +558,16 @@ body {
     width: 100%;
   }
 
+  .btn.yes {
+    font-size: 1.15rem;
+    padding: 0.9rem 2.2rem;
+  }
+
+  .btn.no {
+    font-size: 1rem;
+    padding: 0.8rem 2rem;
+  }
+
   .actions {
     gap: 1rem;
   }

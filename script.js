@@ -220,7 +220,7 @@ const celebrate = () => {
   if (!isLowPower) {
     triggerSuspense();
   }
-  const showDelay = isLowPower ? 150 : 1200;
+  const showDelay = isLowPower ? 0 : 1200;
   setTimeout(() => {
     triggerBloom();
     overlay.classList.add("show");
@@ -535,7 +535,7 @@ const handleYesPress = () => {
   lastYesTap = now;
   if (finalTriggered) return;
   yesClicks += 1;
-  const scale = 1 + yesClicks * 0.12;
+  const scale = isLowPower ? Math.min(1 + yesClicks * 0.06, 1.35) : 1 + yesClicks * 0.12;
   yesBtn.style.transform = `scale(${scale})`;
   bumpYes();
   playClick();
