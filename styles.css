@@ -125,6 +125,7 @@ body {
   transform-origin: center;
   font-size: 1.35rem;
   padding: 1.1rem 3.4rem;
+  transform: scale(0.5);
 }
 
 .btn.yes.pump {
@@ -564,8 +565,8 @@ body {
   }
 
   .btn.no {
-    font-size: 1rem;
-    padding: 0.8rem 2rem;
+    font-size: 0.95rem;
+    padding: 0.7rem 1.8rem;
   }
 
   .actions {

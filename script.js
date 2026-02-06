@@ -63,6 +63,23 @@ const state = {
 
 const random = (min, max) => Math.random() * (max - min) + min;
 
+const computeYesScale = () => {
+  const rect = yesBtn.getBoundingClientRect();
+  const targetScale = Math.max(
+    window.innerWidth / Math.max(rect.width, 1),
+    window.innerHeight / Math.max(rect.height, 1)
+  );
+  const minScale = 0.35;
+  const maxScale = targetScale * 1.1;
+  const progress = Math.min(yesClicks / requiredYesClicks, 1);
+  return minScale + (maxScale - minScale) * progress;
+};
+
+const applyYesScale = () => {
+  const scale = computeYesScale();
+  yesBtn.style.transform = `scale(${scale})`;
+};
+
 const updateNoBounds = () => {
   const rect = noBtn.getBoundingClientRect();
   state.noBounds.w = rect.width;
@@ -535,8 +552,7 @@ const handleYesPress = () => {
   lastYesTap = now;
   if (finalTriggered) return;
   yesClicks += 1;
-  const scale = isLowPower ? Math.min(1 + yesClicks * 0.06, 1.35) : 1 + yesClicks * 0.12;
-  yesBtn.style.transform = `scale(${scale})`;
+  applyYesScale();
   bumpYes();
   playClick();
   if (yesClicks < requiredYesClicks) {
@@ -614,9 +630,11 @@ photoBtn.addEventListener("click", () => {
 window.addEventListener("resize", () => {
   updateNoBounds();
   placeNoNearYes();
+  applyYesScale();
 });
 
 init();
+applyYesScale();
 
 musicBtn.textContent = "Muzică: Pornit";
 musicBtn.setAttribute("aria-pressed", "true");
