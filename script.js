@@ -44,6 +44,10 @@ let yesClicks = 0;
 const requiredYesClicks = 17;
 let noAutoTimer;
 let lastYesTap = 0;
+let finalTriggered = false;
+const isIPhone =
+  /iPhone/i.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+const isLowPower = isIPhone;
 const introMusic = new Audio("intro.mp3");
 const finalMusic = new Audio("final.mp3");
 introMusic.loop = true;
@@ -213,17 +217,22 @@ const spawnTrailPetal = (x, y) => {
 const celebrate = () => {
   document.body.classList.add("romantic-mode");
   bgWave.classList.add("active");
-  triggerSuspense();
+  if (!isLowPower) {
+    triggerSuspense();
+  }
+  const showDelay = isLowPower ? 150 : 1200;
   setTimeout(() => {
     triggerBloom();
     overlay.classList.add("show");
     startFinalShow();
     playFinalVideoAudio();
-  }, 1200);
-  launchFireworks();
-  megaSparkles();
-  bloomPetals();
-  pulseYesGlow();
+  }, showDelay);
+  if (!isLowPower) {
+    launchFireworks();
+    megaSparkles();
+    bloomPetals();
+    pulseYesGlow();
+  }
   for (let i = 0; i < 120; i += 1) {
     const conf = document.createElement("span");
     conf.className = "confetti";
@@ -297,6 +306,12 @@ const launchFireworks = () => {
 
 const startFinalShow = () => {
   // Continuous, strong effects on the final screen
+  if (isLowPower) {
+    launchFireworksLow();
+    gentlePetalRain();
+    gentleSparkles();
+    return;
+  }
   launchFireworksLoop();
   intensePetalRain();
   intenseSparkles();
@@ -326,6 +341,57 @@ const launchFireworksLoop = () => {
   }, interval);
 };
 
+const launchFireworksLow = () => {
+  const interval = 320;
+  setInterval(() => {
+    const burstsThisTick = 2;
+    for (let b = 0; b < burstsThisTick; b += 1) {
+      const centerX = random(10, 90);
+      const centerY = random(10, 65);
+      triggerFlash();
+      for (let i = 0; i < 40; i += 1) {
+        const particle = document.createElement("span");
+        particle.className = "firework-particle";
+        particle.style.left = `${centerX}vw`;
+        particle.style.top = `${centerY}vh`;
+        const angle = random(0, Math.PI * 2);
+        const distance = random(140, 280);
+        particle.style.setProperty("--fx", `${Math.cos(angle) * distance}px`);
+        particle.style.setProperty("--fy", `${Math.sin(angle) * distance}px`);
+        fireworksLayer.appendChild(particle);
+        setTimeout(() => particle.remove(), 1400);
+      }
+    }
+  }, interval);
+};
+
+const gentlePetalRain = () => {
+  setInterval(() => {
+    for (let i = 0; i < 10; i += 1) {
+      const petal = document.createElement("span");
+      petal.className = "petal";
+      petal.style.left = `${random(0, 100)}vw`;
+      petal.style.animationDelay = `${random(0, 0.8)}s`;
+      petal.style.transform = `rotate(${random(-30, 40)}deg)`;
+      heartsLayer.appendChild(petal);
+      setTimeout(() => petal.remove(), 9000);
+    }
+  }, 900);
+};
+
+const gentleSparkles = () => {
+  setInterval(() => {
+    for (let i = 0; i < 14; i += 1) {
+      const sparkle = document.createElement("span");
+      sparkle.className = "sparkle";
+      sparkle.style.left = `${random(0, 100)}vw`;
+      sparkle.style.animationDelay = `${random(0, 0.4)}s`;
+      sparkle.style.opacity = `${random(0.6, 1)}`;
+      sparklesLayer.appendChild(sparkle);
+      setTimeout(() => sparkle.remove(), 6000);
+    }
+  }, 700);
+};
 const intensePetalRain = () => {
   setInterval(() => {
     for (let i = 0; i < 36; i += 1) {
@@ -465,8 +531,9 @@ const init = () => {
 
 const handleYesPress = () => {
   const now = Date.now();
-  if (now - lastYesTap < 250) return;
+  if (now - lastYesTap < 160) return;
   lastYesTap = now;
+  if (finalTriggered) return;
   yesClicks += 1;
   const scale = 1 + yesClicks * 0.12;
   yesBtn.style.transform = `scale(${scale})`;
@@ -477,14 +544,13 @@ const handleYesPress = () => {
     showHint(remaining === 1 ? "Încă o apăsare 💞" : `Încă ${remaining} apăsări`);
     return;
   }
+  finalTriggered = true;
   if (musicOn) {
     introMusic.pause();
     introMusic.currentTime = 0;
+    finalMusic.pause();
     finalMusic.currentTime = 0;
-    finalMusic.play().catch(() => startSynthMusic());
   }
-  introMusic.pause();
-  finalMusic.pause();
   playBoom();
   celebrate();
   yesBtn.disabled = true;
@@ -492,6 +558,10 @@ const handleYesPress = () => {
 
 yesBtn.addEventListener("mouseenter", playClick);
 yesBtn.addEventListener("click", handleYesPress);
+yesBtn.addEventListener("pointerup", (event) => {
+  event.preventDefault();
+  handleYesPress();
+});
 yesBtn.addEventListener("touchend", (event) => {
   event.preventDefault();
   handleYesPress();
