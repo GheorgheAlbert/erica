@@ -60,17 +60,17 @@ const state = {
   noBounds: { w: 0, h: 0 },
   lastTrail: 0,
 };
+const yesBase = { w: 0, h: 0 };
 
 const random = (min, max) => Math.random() * (max - min) + min;
 
 const computeYesScale = () => {
-  const rect = yesBtn.getBoundingClientRect();
   const targetScale = Math.max(
-    window.innerWidth / Math.max(rect.width, 1),
-    window.innerHeight / Math.max(rect.height, 1)
+    window.innerWidth / Math.max(yesBase.w, 1),
+    window.innerHeight / Math.max(yesBase.h, 1)
   );
-  const minScale = 0.35;
-  const maxScale = targetScale * 1.1;
+  const minScale = 0.3;
+  const maxScale = targetScale * 1.25;
   const progress = Math.min(yesClicks / requiredYesClicks, 1);
   return minScale + (maxScale - minScale) * progress;
 };
@@ -84,6 +84,11 @@ const updateNoBounds = () => {
   const rect = noBtn.getBoundingClientRect();
   state.noBounds.w = rect.width;
   state.noBounds.h = rect.height;
+};
+
+const updateYesBase = () => {
+  yesBase.w = yesBtn.offsetWidth || yesBtn.getBoundingClientRect().width;
+  yesBase.h = yesBtn.offsetHeight || yesBtn.getBoundingClientRect().height;
 };
 
 const placeNoButton = (x, y) => {
@@ -629,11 +634,13 @@ photoBtn.addEventListener("click", () => {
 
 window.addEventListener("resize", () => {
   updateNoBounds();
+  updateYesBase();
   placeNoNearYes();
   applyYesScale();
 });
 
 init();
+updateYesBase();
 applyYesScale();
 
 musicBtn.textContent = "Muzică: Pornit";
