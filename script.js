@@ -72,12 +72,15 @@ const computeYesScale = () => {
   const minScale = 0.3;
   const maxScale = targetScale * 1.25;
   const progress = Math.min(yesClicks / requiredYesClicks, 1);
-  return minScale + (maxScale - minScale) * progress;
+  const base = minScale + (maxScale - minScale) * progress;
+  const sx = base * 1.25;
+  const sy = base * 0.9;
+  return { sx, sy };
 };
 
 const applyYesScale = () => {
-  const scale = computeYesScale();
-  yesBtn.style.transform = `scale(${scale})`;
+  const { sx, sy } = computeYesScale();
+  yesBtn.style.transform = `scale(${sx}, ${sy})`;
 };
 
 const updateNoBounds = () => {
